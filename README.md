@@ -27,10 +27,10 @@ Despliega un contrato inteligente en cualquier Testnet de Ethereum usando Remix.
 
 #### Requisitos
 
--Usa Remix IDE
--Actualiza este REAME con una breve explicación del proyecto. Por ejemplo, qué funciones tiene, qué testnet utilizaste. 
--Comenta tu código para que tus compañeros de Zircon puedan entenderlo.
--Utiliza bibliotecas externas si quieres.
+- Usa Remix IDE
+- Actualiza este README con una breve explicación del proyecto. Por ejemplo, qué funciones tiene, qué testnet utilizaste. 
+- Comenta tu código para que tus compañeros de Zircon puedan entenderlo.
+- Utiliza bibliotecas externas si quieres.
 
 ### Lista de recursos
 
