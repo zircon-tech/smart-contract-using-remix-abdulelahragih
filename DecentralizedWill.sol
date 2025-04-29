@@ -16,7 +16,7 @@ contract DecentralizedWill {
     // Set or update a will (you can only add money to the will)
     function setWill(address beneficiary, uint inactivityPeriod) external payable {
         require(beneficiary != address(0), "Invalid beneficiary");
-        require(msg.value > 0, "Must send ETH");
+        require(msg.value > 1, "Must send ETH");
 
         Will storage will = wills[msg.sender];
 
@@ -46,10 +46,12 @@ contract DecentralizedWill {
 
         uint amount = will.amount;
 
+        (bool success, ) = payable(will.beneficiary).call{value: amount}("");
+        require(success, "Transfer failed");
+
+        // Only update state after successful transfer (I could not find a better solution to make this atomic)
         will.claimed = true;
         will.amount = 0;
-
-        payable(will.beneficiary).transfer(amount);
     }
 
     function isClaimable(address _owner) external view returns (bool) {
