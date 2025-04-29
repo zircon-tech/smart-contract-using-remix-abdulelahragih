@@ -1,41 +1,54 @@
-## Unit 3: Ethereum | Remix IDE -English Version- 🚀
+# DecentralizedWill – A Smart Contract for Time-Locked Inheritance
 
-### What's this project about?
+## What's this project about?
 
-Deploy a Smart Contract on any Ethereum Testnet using Remix IDE. 
+**DecentralizedWill** is an Ethereum smart contract that allows users to securely designate a beneficiary who can claim their ETH if the original owner becomes inactive for a specified period. The contract implements a simple heartbeat mechanism and ensures funds are only released when truly necessary. The purpose of this project is to learn about smart contracts and Solidity programming.
 
-#### Requirements 
+---
 
-- Use REMIX IDE
-- Update this README with a brief explanation of the project. For example, what functions it has, what Testnet did you used.   
-- Comment your code so your teammates at Zircon can understand it. 
-- Use external libraries if you want. 
+The contract was deployed on Sepolia testnet.
+https://sepolia.etherscan.io/address/0x5f212806cdb1a06f490fea2e70a80086870014df
 
-### List of resources
+Here is a transaction made with the contract:
+https://sepolia.etherscan.io/tx/0x243b16f4ed24a4e8b025a012c53ef8a6a9fb761b001a70bf9addf3baca69e8ca
 
-#### General
+## How It Works
 
-- If you are short of ideas you can follow this tutorial [Intro to Remix & Solidity | Chainlink Engineering Tutorials](https://www.youtube.com/watch?v=JWJWT9cwFbo&ab_channel=Chainlink)
-- [Chainlink Faucet](https://faucets.chain.link/)
-- [Ethereum Testnet Faucets](https://goethereumbook.org/faucets/)
+- Each user (owner) can **set a will** by specifying:
+  - A **beneficiary** address (the person who will inherit the ETH)
+  - An **inactivity period** (in seconds)
+  - An initial **ETH deposit**
+- The owner must regularly call `heartbeat()` to signal they are alive.
+- If the owner fails to check in and the inactivity period passes, the beneficiary can claim the ETH.
+- ETH can be added any time via `setWill()` or by sending ETH directly.
 
-## Unidad 3: Ethereum | Remix IDE -Versión en español- 🚀
+## Features
 
-### ¿De qué se trata este proyecto?
+- Supports multiple owners — each with their own will
+- Uses a heartbeat mechanism to reset inactivity countdown
+- Beneficiaries can claim only when the owner is inactive
+- Allows owners to send more ETH directly to their will.
 
-Despliega un contrato inteligente en cualquier Testnet de Ethereum usando Remix. 
+## Functions
 
-#### Requisitos
+### `setWill(address beneficiary, uint inactivityPeriod) external payable`
 
-- Usa Remix IDE
-- Actualiza este README con una breve explicación del proyecto. Por ejemplo, qué funciones tiene, qué testnet utilizaste. 
-- Comenta tu código para que tus compañeros de Zircon puedan entenderlo.
-- Utiliza bibliotecas externas si quieres.
+- Sets or updates the caller’s will.
+- Requires ETH deposit (`msg.value > 1`).
+- Updates beneficiary, inactivity period, and last check-in time.
 
-### Lista de recursos
+### `heartbeat() external`
 
-#### General
+- Updates the owner's last check-in timestamp.
+- Must be called regularly to keep the will unclaimable.
 
-- Si estas sin ideas, puedes seguir el siguiente tutorial [Intro to Remix & Solidity | Chainlink Engineering Tutorials](https://www.youtube.com/watch?v=JWJWT9cwFbo&ab_channel=Chainlink)
-- [Chainlink Faucet](https://faucets.chain.link/)
-- [Ethereum Testnet Faucets](https://goethereumbook.org/faucets/)
+### `claim(address owner) external`
+
+- Allows a beneficiary to claim the inheritance if:
+  - The owner hasn't checked in within the inactivity period
+  - They are the registered beneficiary
+  - The will hasn’t already been claimed
+
+### `isClaimable(address owner) external view returns (bool)`
+
+- View-only function that returns true if a will is claimable by its beneficiary.
